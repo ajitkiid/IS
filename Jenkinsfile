@@ -11,8 +11,10 @@ pipeline {
                 echo "${env.BRANCH_NAME}"
                 script {
                     def commitID = GIT_COMMIT.take(5)
-                    bat label: '', script: 'md C:\\SoftwareAG\\common\\AssetBuildEnvironment\\source\\'+commitID
-                    
+                    def changedAssetsPath = "C:\\SoftwareAG\\common\\AssetBuildEnvironment\\source\\"+commitID
+                    bat label: '', script: 'if not exist '+changedAssetsPath+ ' md '+changedAssetsPath
+                    def log = bat label: '',returnStdout: true, script:'git log -m -1 --name-only --pretty="format:" '+ GIT_COMMIT
+                    echo log
                 }
             }
         }
